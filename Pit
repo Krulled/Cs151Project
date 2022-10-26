@@ -1,0 +1,26 @@
+package mancala;
+
+public class Pit {
+
+	private int totalStones;
+	
+	public Pit(int initialStones) {
+		totalStones = initialStones;
+	}
+	
+	public void addStone() {
+		totalStones += 1;
+	}
+	
+	public void removeStone() {
+		totalStones -= 1;
+	}
+	
+	public int getStones() {
+		return totalStones;
+	}
+	
+	public void setStones(int amount) {
+		totalStones = amount;
+	}
+}
