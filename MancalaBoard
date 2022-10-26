@@ -1,0 +1,7 @@
+package mancala;
+
+import javax.swing.JPanel;
+
+public class MancalaBoard extends JPanel{
+
+}
