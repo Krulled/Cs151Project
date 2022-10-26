@@ -1,0 +1,21 @@
+package mancala;
+
+public class Mancala {
+
+	private GoalMancala A;
+	private GoalMancala B;
+	private Pit[] rowA;
+	private Pit[] rowB;
+	
+	public Mancala(int initialStones) {
+		A = new GoalMancala();
+		B = new GoalMancala();
+		for(int i = 0; i < 6; i++) {
+			rowA[i] = new Pit(initialStones);
+		}
+		for(int i = 0; i < 6; i++) {
+			rowB[i] = new Pit(initialStones);
+		}
+	}
+	
+}
