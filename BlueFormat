@@ -23,11 +23,10 @@ public class BlueFormat implements MancalaFormatter{
 	}
 
 	public Shape formatBoardShape() {
-		return new RoundRectangle2D.Double(10, 10, MancalaBoard.BOARD_WIDTH, MancalaBoard.BOARD_HEIGHT, 20, 20);
+		return new RoundRectangle2D.Double(10, 10, MancalaView.BOARD_WIDTH, MancalaView.BOARD_HEIGHT, 20, 20);
 	}
 
-	public Shape formatPitShape() {
-		return new RoundRectangle2D.Double(20, 20, MancalaBoard.PIT_WIDHT, MancalaBoard.BOARD_HEIGHT, 20, 20);
+	public Shape formatPitShape(Pit pit) {
+		return new RoundRectangle2D.Double(pit.getX(), pit.getY(), pit.getWidth(), pit.getHeight(), 20, 20);
 	}
-
 }
