@@ -19,5 +19,5 @@ public interface MancalaFormatter {
 	Color formatOutlineColor();
 	Color formatBoardBackground();
 	Shape formatBoardShape();
-	Shape formatPitShape();
+	Shape formatPitShape(Pit pit);
 }
