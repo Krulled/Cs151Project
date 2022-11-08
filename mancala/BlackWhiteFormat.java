@@ -23,11 +23,11 @@ public class BlackWhiteFormat implements MancalaFormatter{
 	}
 
 	public Shape formatBoardShape() {
-		return new Rectangle2D.Double(10, 10, MancalaBoard.BOARD_WIDTH, MancalaBoard.BOARD_HEIGHT);
+		return new Rectangle2D.Double(10, 10, MancalaView.BOARD_WIDTH, MancalaView.BOARD_HEIGHT);
 	}
 
-	public Shape formatPitShape() {
-		return new Rectangle2D.Double(20, 20, MancalaBoard.BOARD_WIDTH, MancalaBoard.BOARD_HEIGHT);
+	public Shape formatPitShape(Pit pit) {
+		return new Rectangle2D.Double(pit.getX(), pit.getY(), pit.getWidth(), pit.getHeight());
 	}
 
 }
