@@ -2,6 +2,7 @@ package mancala;
 
 import java.awt.Color;
 import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.RoundRectangle2D;
 
 /**
@@ -27,6 +28,11 @@ public class BlueFormat implements MancalaFormatter{
 	}
 
 	public Shape formatPitShape(Pit pit) {
-		return new RoundRectangle2D.Double(pit.getX(), pit.getY(), pit.getWidth(), pit.getHeight(), 20, 20);
+		return new Ellipse2D.Double(pit.getX(), pit.getY(), pit.getWidth(), pit.getHeight());
 	}
+
+	public Shape formatGoalMancalaShape(GoalMancala goal) {
+		return new RoundRectangle2D.Double(goal.getX(), goal.getY(), goal.getWidth(), goal.getHeight(), 20, 20);
+	}
+
 }
