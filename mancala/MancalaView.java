@@ -16,11 +16,11 @@ import javax.swing.event.ChangeListener;
  * This MancalaView contains graphical user interface (GUI) components for
  * MancalaModel and ChangeListener for event handling mechanism.
  * Notes:
- * 		     Initial board
- * 			(<<<Row B<<<)
- * 			4  4  4  4  4  4
- * 	(B)	 0  a  b  c  d  e  f  0 (A)
- *   	    4  4  4  4  4  4
+ * 		Initial board
+ *  		(<<<Row B<<<)
+ * 	       4  4  4  4  4  4
+ * 	(B) 0  a  b  c  d  e  f  0 (A)
+ *   	       4  4  4  4  4  4
  *  		(>>>Row A>>>) 
  */
 
