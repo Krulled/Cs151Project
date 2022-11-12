@@ -20,4 +20,6 @@ public interface MancalaFormatter {
 	Color formatBoardBackground();
 	Shape formatBoardShape();
 	Shape formatPitShape(Pit pit);
+	Shape formatGoalMancalaShape(GoalMancala goal);
+
 }
