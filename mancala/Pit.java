@@ -24,6 +24,7 @@ public class Pit implements Hole{
 		this.width = w;
 		this.height = h;
 		stonesInPit = new ArrayList<>();
+		totalStones = 0;
 	}
 	
 	public int getX() {
@@ -77,7 +78,7 @@ public class Pit implements Hole{
 		//Display pit label
 		int temp = MancalaView.PIT_WIDTH*2 + MancalaView.PIT_WIDTH/5;
 		if(this.y == MancalaView.TOP_Y) {
-			if(this.x == temp) 	g2.drawString("B1", x+20, y-10);
+			if(this.x == temp) 		g2.drawString("B1", x+20, y-10);
 			if(this.x == temp+55) 	g2.drawString("B2", x+20, y-10);
 			if(this.x == temp+55*2) g2.drawString("B3", x+20, y-10);
 			if(this.x == temp+55*3) g2.drawString("B4", x+20, y-10);
@@ -85,7 +86,7 @@ public class Pit implements Hole{
 			if(this.x == temp+55*5) g2.drawString("B6", x+20, y-10);
 		}
 		if(this.y == MancalaView.BOTTOM_Y) {
-			if(this.x == temp) 	g2.drawString("A1", x+20, y+MancalaView.PIT_HEIGHT+15);
+			if(this.x == temp) 		g2.drawString("A1", x+20, y+MancalaView.PIT_HEIGHT+15);
 			if(this.x == temp+55) 	g2.drawString("A2", x+20, y+MancalaView.PIT_HEIGHT+15);
 			if(this.x == temp+55*2) g2.drawString("A3", x+20, y+MancalaView.PIT_HEIGHT+15);
 			if(this.x == temp+55*3) g2.drawString("A4", x+20, y+MancalaView.PIT_HEIGHT+15);
@@ -93,35 +94,46 @@ public class Pit implements Hole{
 			if(this.x == temp+55*5) g2.drawString("A6", x+20, y+MancalaView.PIT_HEIGHT+15);
 		}
 		
-		//Print number of stones in pit
+		//Print number of stones in pit 
 		if(this.y == MancalaView.TOP_Y) {
 			g2.drawString(" " + totalStones, x+20, y+MancalaView.PIT_HEIGHT+15); 
-
+			g2.setColor(color);
 		}
 		if(this.y == MancalaView.BOTTOM_Y) {
 			g2.drawString(" " + totalStones, x+20, y-10);
+			g2.setColor(color);
 		}
-			
 		
-		//Display stones in pit
-		int counter = 0; //counter for number of stones already displayed in pit
+		//Display stones in pit (NOT FINISHED)
+		int counter = 1; //counter for number of stones already displayed in pit
+		double xcoord = this.x + 10;
+		double ycoord = this.y + 10;
 		for(int i = 0; i < totalStones; i++) {
+			System.out.println(i);
 			if(counter > 10) { //stop displaying stones over 10
 				return;
 			}
-			double xcoord = this.x + 2;
-			double ycoord = this.y + 2;
-			if(xcoord == this.x + STONE_SIZE || ycoord == this.y + STONE_SIZE) {
-				xcoord = this.x + 2;
-				ycoord = this.y + 5;
+			if(counter % 2 == 0) {
+				xcoord = this.x + 10;
+				ycoord = this.y + 25;
+			}
+			else if(counter % 2 == 1) {
+				xcoord = this.x + 30;
+				ycoord = this.y + 20;
 			}
 			Ellipse2D.Double stone = new Ellipse2D.Double(xcoord, ycoord, STONE_SIZE, STONE_SIZE);
+			System.out.println("xcoord: " + xcoord);
+			System.out.println("ycoord: " + ycoord);
+
 			stonesInPit.add(stone);
-			counter++;
-			g2.setColor(Color.BLACK);
+			g2.setColor(Color.CYAN);
 			g2.fill(stone);
 			g2.draw(stone);
+			g2.setColor(color);
+			counter++;
+			xcoord = this.x + 25;
+			ycoord = this.y + 15;
 		}
-	}
-	
+		
+	}	
 }
