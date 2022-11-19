@@ -44,21 +44,32 @@ public class MancalaView extends JComponent implements ChangeListener{
 
 	private MancalaModel mancalaModel;
 	private MancalaFormatter mancalaFormat;
+	private int initialStones;
 	
 
-	public MancalaView(MancalaModel m, MancalaFormatter f) {
-		this.mancalaModel = m;
-		this.mancalaFormat = f;
+	public MancalaView(MancalaModel model) {
+		mancalaModel = model;
+		mancalaFormat = model.getFormat();
 		rowA = new ArrayList<>();
 		rowB = new ArrayList<>();
+		initialStones = model.getInitialStones();
 		totalStonesPits = new int[12];
 		totalStonesGoals = new int[2];
+		for(int i = 0; i < totalStonesPits.length; i++) {
+			totalStonesPits[i] = mancalaModel.getInitialStones();
+//			System.out.println("totalStonesPits[i]:" + totalStonesPits[i]);
+		}
+		for(int i = 0; i < totalStonesPits.length; i++) {
+			totalStonesPits[i] = 0;
+		}
 	}
 
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		Rectangle2D.Double border = new Rectangle2D.Double(20,20,BOARD_WIDTH,BOARD_HEIGHT);
-		g2.draw(border);
+//		g2.draw(border);
+		g2.setColor(mancalaFormat.formatBoardBackground());
+		g2.fill(border);
 		
 		drawView();
 		A.draw(g2);
@@ -72,13 +83,23 @@ public class MancalaView extends JComponent implements ChangeListener{
 	}
 	
 	public void drawView() {
-//		A = new GoalMancala(400, 45, GOAL_WIDTH, GOAL_HEIGHT);
-		A = new GoalMancala(BOARD_WIDTH-50, BOARD_WIDTH/10-5, GOAL_WIDTH, GOAL_HEIGHT);
-		A.setShape(mancalaFormat.formatGoalMancalaShape(A));
+		//Set initial stones in each pit
+//		for(int i = 0; i < totalStonesPits.length; i++) {
+//			totalStonesPits[i] = mancalaModel.getInitialStones();
+//			System.out.println("totalStonesPits[i]:" + totalStonesPits[i]);
+//		}
+//		for(int i = 0; i < totalStonesPits.length; i++) {
+//			totalStonesPits[i] = 0;
+//		}
 		
-//		B = new GoalMancala(40, 45, GOAL_WIDTH, GOAL_HEIGHT);
+		A = new GoalMancala(BOARD_WIDTH-50, BOARD_WIDTH/10-5, GOAL_WIDTH, GOAL_HEIGHT);
+		A.setColor(mancalaFormat.formatOutlineColor());
+		A.setShape(mancalaFormat.formatGoalMancalaShape(A)); 
+		
+		B = new GoalMancala(40, 45, GOAL_WIDTH, GOAL_HEIGHT);
 		B = new GoalMancala(BOARD_WIDTH/10-10, BOARD_WIDTH/10-5, GOAL_WIDTH, GOAL_HEIGHT);
-		B.setShape(mancalaFormat.formatGoalMancalaShape(B));
+		B.setColor(mancalaFormat.formatOutlineColor());
+		B.setShape(mancalaFormat.formatGoalMancalaShape(B)); 
 		
 		Pit B0 = new Pit(PIT_WIDTH*2 + PIT_WIDTH/5, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
 		Pit B1 = new Pit(B0.getX() + 55, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
@@ -86,30 +107,31 @@ public class MancalaView extends JComponent implements ChangeListener{
 		Pit B3 = new Pit(B2.getX() + 55, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
 		Pit B4 = new Pit(B3.getX() + 55, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
 		Pit B5 = new Pit(B4.getX() + 55, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
+		B0.setStones(mancalaModel.getInitialStones()); B0.setShape(mancalaFormat.formatPitShape(B0)); B0.setColor(mancalaFormat.formatOutlineColor()); 		 
+		B1.setStones(mancalaModel.getInitialStones()); B1.setShape(mancalaFormat.formatPitShape(B1)); B1.setColor(mancalaFormat.formatOutlineColor());
+		B2.setStones(mancalaModel.getInitialStones()); B2.setShape(mancalaFormat.formatPitShape(B2)); B2.setColor(mancalaFormat.formatOutlineColor());
+		B3.setStones(mancalaModel.getInitialStones()); B3.setShape(mancalaFormat.formatPitShape(B3)); B3.setColor(mancalaFormat.formatOutlineColor());
+		B4.setStones(mancalaModel.getInitialStones()); B4.setShape(mancalaFormat.formatPitShape(B4)); B4.setColor(mancalaFormat.formatOutlineColor());
+		B5.setStones(mancalaModel.getInitialStones()); B5.setShape(mancalaFormat.formatPitShape(B5)); B5.setColor(mancalaFormat.formatOutlineColor());
 		rowB.add(B0); rowB.add(B1); rowB.add(B2); rowB.add(B3); rowB.add(B4); rowB.add(B5);
-		B0.setStones(totalStonesPits[0]); B0.setShape(mancalaFormat.formatPitShape(B0));
-		B1.setStones(totalStonesPits[1]); B1.setShape(mancalaFormat.formatPitShape(B1));
-		B2.setStones(totalStonesPits[2]); B2.setShape(mancalaFormat.formatPitShape(B2));
-		B3.setStones(totalStonesPits[3]); B3.setShape(mancalaFormat.formatPitShape(B3));
-		B4.setStones(totalStonesPits[4]); B4.setShape(mancalaFormat.formatPitShape(B4));
-		B5.setStones(totalStonesPits[5]); B5.setShape(mancalaFormat.formatPitShape(B5));
+
 		
 		Pit A0 = new Pit(PIT_WIDTH*2 + PIT_WIDTH/5, BOTTOM_Y, PIT_WIDTH, PIT_HEIGHT);
-		Pit A1 = new Pit(A0.getX() + 55, BOTTOM_Y, PIT_WIDTH, PIT_HEIGHT);
+		Pit A1 = new Pit(A0.getX() + 55, BOTTOM_Y, PIT_WIDTH, PIT_HEIGHT); 
 		Pit A2 = new Pit(A1.getX() + 55, BOTTOM_Y, PIT_WIDTH, PIT_HEIGHT);
 		Pit A3 = new Pit(A2.getX() + 55, BOTTOM_Y, PIT_WIDTH, PIT_HEIGHT);
 		Pit A4 = new Pit(A3.getX() + 55, BOTTOM_Y, PIT_WIDTH, PIT_HEIGHT);
 		Pit A5 = new Pit(A4.getX() + 55, BOTTOM_Y, PIT_WIDTH, PIT_HEIGHT);
 		rowA.add(A0); rowA.add(A1); rowA.add(A2); rowA.add(A3); rowA.add(A4); rowA.add(A5);
-		A0.setStones(totalStonesPits[0]); A0.setShape(mancalaFormat.formatPitShape(A0));
-		A1.setStones(totalStonesPits[1]); A1.setShape(mancalaFormat.formatPitShape(A1));
-		A2.setStones(totalStonesPits[2]); A2.setShape(mancalaFormat.formatPitShape(A2));
-		A3.setStones(totalStonesPits[3]); A3.setShape(mancalaFormat.formatPitShape(A3));
-		A4.setStones(totalStonesPits[4]); A4.setShape(mancalaFormat.formatPitShape(A4));
-		A5.setStones(totalStonesPits[5]); A5.setShape(mancalaFormat.formatPitShape(A5));
+		A0.setStones(mancalaModel.getInitialStones()); A0.setShape(mancalaFormat.formatPitShape(A0)); A0.setColor(mancalaFormat.formatOutlineColor());
+		A1.setStones(mancalaModel.getInitialStones()); A1.setShape(mancalaFormat.formatPitShape(A1)); A1.setColor(mancalaFormat.formatOutlineColor());
+		A2.setStones(mancalaModel.getInitialStones()); A2.setShape(mancalaFormat.formatPitShape(A2)); A2.setColor(mancalaFormat.formatOutlineColor());
+		A3.setStones(mancalaModel.getInitialStones()); A3.setShape(mancalaFormat.formatPitShape(A3)); A3.setColor(mancalaFormat.formatOutlineColor());
+		A4.setStones(mancalaModel.getInitialStones()); A4.setShape(mancalaFormat.formatPitShape(A4)); A4.setColor(mancalaFormat.formatOutlineColor());
+		A5.setStones(mancalaModel.getInitialStones()); A5.setShape(mancalaFormat.formatPitShape(A5)); A5.setColor(mancalaFormat.formatOutlineColor());
 		
 	}
-
+	
 	public int[] getTotalStonesPits() {
 		return totalStonesPits;
 	}
@@ -122,7 +144,18 @@ public class MancalaView extends JComponent implements ChangeListener{
 		return mancalaModel;
 	}
 	
+	public int getInitialStones() {
+		return initialStones;
+	}
+
+	public void setInitialStones(int initialStones) {
+		this.initialStones = initialStones;
+	}
+	
+	@Override
 	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
+
 }
