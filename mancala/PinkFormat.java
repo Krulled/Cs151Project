@@ -7,17 +7,17 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
 
 /**
- * The BlackWhiteFormat class is a Strategy pattern that styles the board with a black and white theme. 
+ * The PinkFormat class is a Strategy pattern that styles the board with a pink theme. 
  */
 
-public class BlackWhiteFormat implements MancalaFormatter{
+public class PinkFormat implements MancalaFormatter{
 
 	public Color formatStoneColor() {
 		return Color.BLACK;
 	}
 
 	public Color formatOutlineColor() {
-		return Color.BLACK;
+		return Color.MAGENTA;
 	}
 	
 	public Color formatBoardBackground() {
