@@ -1,175 +1,92 @@
-package simpleCalendar;
+package mancala;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- * Fall 2022: CS 151 Programming Assignment 5 (Simple GUI Calendar) Solution
- * @author Jasmine Lao
- * @version 1.0 11/7/2022
+ * This MancalaModel provides the underlying data structures and holds subjects in which the event occurs.
  */
 
-public class CalendarModel {
+public class MancalaModel{
+
+	private ArrayList<ChangeListener> listeners;
+	private int initialStones;
+	private MancalaFormatter format;
+
 	
-	ArrayList<EventsInDates> allEventsPerDate; //Data structure that holds events per date
-	ArrayList<ChangeListener> listeners; //Data structure that holds views
-	static boolean savingEventStatus;
-	
-	public CalendarModel() {
-		this.allEventsPerDate = new ArrayList<EventsInDates>();
-		this.listeners = new ArrayList<ChangeListener>();
+	public MancalaModel() {
+		listeners = new ArrayList<>();
 	}
 	
-	/**
-	 * Adds an event to the events array list.
-	 * Serves as MUTATOR.
-	 * @param event, event to be added
-	 */
-	public void addEventsInDates(EventsInDates eventList) {
-		allEventsPerDate.add(eventList);
-		ChangeEvent e = new ChangeEvent(this);
-		for(ChangeListener listener : listeners) {
-			listener.stateChanged(e);
+	public void startGame() {
+		JDialog popup = new JDialog();
+
+		JLabel theme = new JLabel("Choose a theme!");
+		Object[] optionsForTheme = {"Blue Format", "Pink Format"};
+		String initialThemeSelection = "Blue Format";
+		Object askForTheme = JOptionPane.showInputDialog(null, theme, "Menu", JOptionPane.QUESTION_MESSAGE, null, optionsForTheme, initialThemeSelection); 		
+		JOptionPane selectionTheme = new JOptionPane(askForTheme);
+		String selectedTheme = askForTheme.toString();
+		if(selectedTheme.equals("Blue Format")) {
+			format = new BlueFormat();
 		}
+		else if (selectedTheme.equals("Pink Format")) {
+			format = new PinkFormat();
+		}
+
+		JLabel stones = new JLabel("Choose the number of initial stones!");
+		Object[] optionsForStones = {"1", "2", "3", "4"};
+		String initialStoneSelection = "4";
+		Object askForStones = JOptionPane.showInputDialog(null, stones, "Menu", JOptionPane.QUESTION_MESSAGE, null, optionsForStones, initialStoneSelection); 		
+		JOptionPane selectionStones = new JOptionPane(askForTheme);
+		String selectedStones = askForStones.toString();
+		if(selectedStones.equals("4")) {
+			initialStones = 4;
+		}
+		else if(selectedStones.equals("3")) {
+			initialStones = 3;
+		}
+		else if(selectedStones.equals("2")) {
+			initialStones = 2;
+		}
+		else if(selectedStones.equals("1")) {
+			initialStones = 1;
+		}
+
+		popup.add(selectionTheme);
+		popup.add(selectionStones);
+		popup.setVisible(true);
 	}
 	
 	/**
-	 * Returns an ArrayList consisting of all events.
-	 * Serves as ACCESSOR.
-	 * @return ArrayList<Events>, an ArrayList of Events
-	 */
-	public ArrayList<EventsInDates> getEvents() {
-		return allEventsPerDate;
-	}
-	
-	/**
-	 * Adds change listener to listeners array list.
+	 * Attaches change listener to listeners array list.
 	 * Serves as ATTACHER.
 	 * @param listener, listener to be added to ArrayList
 	 */
-	public void attach(ChangeListener listener) {
+	public void addChangeListener(ChangeListener listener) {
 		listeners.add(listener);
 	}
 	
-	public boolean saveEvent(String title, String date, String start, String end) {
-		savingEventStatus = true;
-		
-		try {	
-			DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
-			DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("H:mm");
+	public void setFormat(MancalaFormatter f) {
+		this.format = f;
+	}
 
-			LocalDate dateInLocalDate = LocalDate.parse(date, dateFormatter);
-			LocalTime startInLocalTime = LocalTime.parse(start, timeFormatter);
-			LocalTime endInLocalTime = LocalTime.parse(end, timeFormatter);
-		
-			Event newEvent = new Event();
-			newEvent.setName(title);
-			newEvent.setDate(dateInLocalDate);
-			newEvent.setStartDate(startInLocalTime);
-			newEvent.setEndDate(endInLocalTime);
-			
-			//check for conflicts within events created
-			for(EventsInDates list : allEventsPerDate) {
-				for(Event e : list.getDatesEvents()) {
-					if(e.checkForConflict(newEvent) == true) {
-						return false;
-					}
-					if(e.equals(newEvent)) {
-						return false;
-					}
-				}
-			}
-		
-			//check if date with list of events already exists in allEventsPerDate
-			boolean contains = false;
-			for(EventsInDates list: allEventsPerDate) {
-				if(list.getDate().equals(dateInLocalDate)) {
-					contains = true;
-				}
-			}
-						
-			if(contains == false) { //if not, create new eventList for this date
-				EventsInDates eventList = new EventsInDates(dateInLocalDate); //create new list to hold all events for date
-				eventList.addEventsInDates(newEvent); //add newEvent to list
-				this.addEventsInDates(eventList); //add newEvent to allEventsPerDate
-			}
-			else { //if eventList already exists, directly add newEvent to the list
-				for(EventsInDates list: allEventsPerDate) {
-					if(list.getDate().equals(dateInLocalDate)) {
-						list.addEventsInDates(newEvent);
-					}
-				}
-			}
-		}
-		catch(DateTimeParseException x) {
-			savingEventStatus = false;
-		}
-		return true;
+	public MancalaFormatter getFormat() {
+		return format;
 	}
 	
-	public String getDateAndEvents(Calendar calendar) {
-		String result = "";
-		String dayOfWeek = getDayOfWeekName(calendar.get(Calendar.DAY_OF_WEEK));
-		int month = calendar.get(Calendar.MONTH)+1;
-		int date = calendar.get(Calendar.DATE);
-		int year = calendar.get(Calendar.YEAR);
-		result += dayOfWeek + " " + month + "/" + date + "/" + year + "\n	";
-		
-	
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/d/yyyy");
-		String dateInString = month + "/" + date + "/" + year;
-		LocalDate dateInLocalDate = LocalDate.parse(dateInString, dateFormatter);
-		EventsInDates listOfEventsForDate = new EventsInDates(dateInLocalDate);
-		for(EventsInDates a : allEventsPerDate) {
-			if(a.getDate().equals(dateInLocalDate)) {
-				listOfEventsForDate = a;
-			}
-		}
-		for(Event e : listOfEventsForDate.getDatesEvents()) {
-			if(!result.contains(e.toString())) {
-				result += e.toString() + "	";
-			}
-		}
-		return result;
+	public int getInitialStones() {
+		return initialStones;
 	}
-	
-	public String getDayOfWeekName(int value) {
-		String name = "";
-		 if (value == 1) {
-			name = "SUNDAY";
-		}
-		 else if (value == 2) {
-			name = "MONDAY";
-		} 
-		else if (value == 3) {
-			name = "TUESDAY";
-		} 
-		else if (value == 4) {
-			name = "WEDNESDAY";
-		} 
-		else if (value == 5) {
-			name = "THURSDAY";
-		} 
-		else if (value == 6) {
-			name = "FRIDAY";
-		} 
-		else if (value == 7) {
-			name = "SATURDAY";
-		} 
-		return name;
+
+	public void setInitialStones(int initialStones) {
+		this.initialStones = initialStones;
 	}
-	
-	public void loadEvents() {
-		//should use deserialization
-	}
+
+
 }
-
