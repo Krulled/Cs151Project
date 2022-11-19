@@ -50,6 +50,10 @@ public class GoalMancala implements Hole{
 		return totalStones;
 	}
 	
+	public void setStones(int num) {
+		totalStones = num;
+	}
+	
 	public void addStones(int amount) {
 		totalStones += amount;
 	}
@@ -60,6 +64,7 @@ public class GoalMancala implements Hole{
 
 	public void setShape(Shape shape) {
 		this.shape = shape;
+		this.setColor(color);
 	}
 	
 	public void setColor(Color color) {
@@ -67,16 +72,19 @@ public class GoalMancala implements Hole{
 	}
 
 	public void draw(Graphics2D g2) {
-		g2.draw(shape);
 		g2.setColor(color);
+		g2.draw(shape);
 		
 		if(this.x == MancalaView.BOARD_WIDTH-50) {
-			g2.drawString("Mancala B", x-2, y-5);
-		}
-		else {
 			g2.drawString("Mancala A", x-2, y-5);
+			g2.setColor(color);
+		}
+		else{
+			g2.drawString("Mancala B", x-2, y-5);
+			g2.setColor(color);
 		}
 		
+		//NOT FINISHED
 		if(totalStones > 0) {
 			for(int i = 0; i < totalStones; i++) {
 				double xcoord = this.x + 2;
