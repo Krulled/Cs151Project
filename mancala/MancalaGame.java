@@ -26,10 +26,9 @@ public class MancalaGame extends JFrame{
 		add(view, BorderLayout.CENTER); //add view to CENTER of frame
 		
 		JPanel menuPanel = new JPanel();
-		JButton undoButton = new JButton("UNDO");
+		JButton undoButton = model.getUndoButton();
 		menuPanel.add(undoButton);		//add undo button to menu panel
 		add(menuPanel, BorderLayout.NORTH);	//add menu panel to NORTH of frame
-		
 	}
 
 }
