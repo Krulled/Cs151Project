@@ -21,5 +21,5 @@ public interface MancalaFormatter {
 	Shape formatBoardShape();
 	Shape formatPitShape(Pit pit);
 	Shape formatGoalMancalaShape(GoalMancala goal);
-
+	MancalaFormatter getFormatter();
 }
