@@ -13,7 +13,7 @@ import java.awt.geom.RoundRectangle2D;
 public class PinkFormat implements MancalaFormatter{
 
 	public Color formatStoneColor() {
-		return Color.BLACK;
+		return Color.GRAY;
 	}
 
 	public Color formatOutlineColor() {
@@ -34,6 +34,10 @@ public class PinkFormat implements MancalaFormatter{
 
 	public Shape formatGoalMancalaShape(GoalMancala goal) {
 		return new RoundRectangle2D.Double(goal.getX(), goal.getY(), goal.getWidth(), goal.getHeight(), 20, 20);
+	}
+
+	public MancalaFormatter getFormatter(){
+		return this;
 	}
 
 }
