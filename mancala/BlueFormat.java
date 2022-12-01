@@ -34,5 +34,9 @@ public class BlueFormat implements MancalaFormatter{
 	public Shape formatGoalMancalaShape(GoalMancala goal) {
 		return new RoundRectangle2D.Double(goal.getX(), goal.getY(), goal.getWidth(), goal.getHeight(), 20, 20);
 	}
+	
+	public MancalaFormatter getFormatter(){
+		return this;
+	}
 
 }
