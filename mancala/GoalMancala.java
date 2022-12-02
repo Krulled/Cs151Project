@@ -22,6 +22,13 @@ public class GoalMancala implements Hole{
 	private Shape shape;
 	private ArrayList<Ellipse2D.Double> stonesInPit;
 
+	/**
+	 * creates the goal for the mancala game
+	 * @param x horizontal value
+	 * @param y vertical value
+	 * @param w how wide it is
+	 * @param h how tall it is
+	 */
 	public GoalMancala(int x, int y, int w, int h) {
 		this.x = x;
 		this.y = y;
@@ -32,6 +39,10 @@ public class GoalMancala implements Hole{
 		id = -1;
 	}
 	
+	/**
+	 * gets the id
+	 * @return the id of the board
+	 */
 	public int getId() {
 		return id;
 	}

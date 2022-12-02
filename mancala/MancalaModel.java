@@ -26,17 +26,27 @@ public class MancalaModel{
 	private int[] previousPits;
 	private int numberOfUndos = 0;
 	
-	
+	/**
+	 * the model for this board, putting the structure together
+	 */
 	public MancalaModel() {
 		listeners = new ArrayList<>();
 		allPits = new int[14];
 		previousPits = new int[14];
 	}
 	
+	/**
+	 * gets the pits values
+	 * @return the values within the pits
+	 */
 	public int[] getViewPits() {
 		return MancalaView.getTotalStonesPits();
 	}
 	
+	/**
+	 * starts the game, asking for the color format, starting stones and then displays game
+	 * postcondition: java window is displayed
+	 */
 	public void startGame() {
 		JDialog popup = new JDialog();
 		
@@ -86,32 +96,60 @@ public class MancalaModel{
 		listeners.add(listener);
 	}
 	
+	/**
+	 * updates the listeners within the pits
+	 */
 	public void updateListeners() {
 		for(ChangeListener listener : listeners) {
 			listener.stateChanged(new ChangeEvent(this));
 		}
 	}
 	
+	/**
+	 * sets the format to the board
+	 * @param f - the format
+	 */
 	public void setFormat(MancalaFormatter f) {
 		this.format = f;
 	}
 
+	/**
+	 * gets the format of the mancala from the mancalaformatter class
+	 * @return the format in the form of mancalaformatter
+	 */
 	public MancalaFormatter getFormat() {
 		return format;
 	}
 	
+	/**
+	 * gets the initial stones amount
+	 * @return the integer value of the stones starting with
+	 */
 	public int getInitialStones() {
 		return initialStones;
 	}
 
+	/**
+	 * sets the initial part of the stones
+	 * @param initialStones - the number of stones to set
+	 */
 	public void setInitialStones(int initialStones) {
 		this.initialStones = initialStones;
 	}
 	
+	/**
+	 * gets all the pits within the mancala board
+	 * @return the array of pits
+	 */
 	public int[] getAllPits(){
 		return this.allPits;
 	}
 	
+	/**
+	 * moves the stone according to the game rules
+	 * @param index - the index at which we starting moving the stones
+	 * postcondition: stones will change pits
+	 */
 	public void moveStones(int index) {
 		previousPits =  getViewPits().clone();
 		allPits = getViewPits();
@@ -133,12 +171,22 @@ public class MancalaModel{
 			stonesInPits[temp] = stonesInPits[temp] + 1;
 			numberStones--;
 		}
+		if(stonesInPits[temp] == 1) {
+			if(temp <= 5 && temp >= 0) { //Don't add in MancalaB if Player 1
+				giveOppositeA(temp);
+			}
+			if(temp <= 12 && temp >= 7) { //Don't add in MancalaA if Player 2
+				giveOppositeB(temp);
+			}
+		}
 		if(getEmptyRow() == "Row A") {
 			giveAllToMancalaB();
 		}
 		else if(getEmptyRow() == "Row B") {
 			giveAllToMancalaA();
 		}
+		// start here with if statement
+		//if last pile stones = 1, give all opposite pile to placer
 		this.updateListeners();
 
 		if(checkIfGameEnds() == true) {
@@ -146,6 +194,79 @@ public class MancalaModel{
 		}
 	}
 	
+	/**
+	 * gives the opponents stones across from them - edge case
+	 * @param index - the index at which we start from
+	 */
+	public void giveOppositeA(int index) {
+		if(index == 0) 
+			moveToA(0,12);
+		if(index == 1)
+			moveToA(1,11);
+		if(index == 2) 
+			moveToA(2,10);
+		if(index == 3) 
+			moveToA(3,9);
+		if(index == 4) 
+			moveToA(4,8);
+		if(index == 5) 
+			moveToA(5,7);
+	}
+	
+	/**
+	 * gives the opponents stones across from them - edge case
+	 * @param index - the index at which we start from
+	 */
+	public void giveOppositeB(int index) {
+		if(index == 12) 
+			moveToB(0,12);
+		if(index == 11)
+			moveToB(1,11);
+		if(index == 10) 
+			moveToB(2,10);
+		if(index == 9) 
+			moveToB(3,9);
+		if(index == 8) 
+			moveToB(4,8);
+		if(index == 7) 
+			moveToB(5,7);
+	}
+	
+	/**
+	 * moves the stones to panel a
+	 * @param a the index of player a
+	 * @param b the index of player b
+	 */
+	public void moveToA(int a, int b) {
+		int stonesCollected = 0;
+		stonesCollected += allPits[a];
+		stonesCollected += allPits[b];
+		allPits[a] = 0;
+		allPits[b] = 0;
+		allPits[6] += stonesCollected;
+		this.updateListeners();
+	}
+	
+	/**
+	 * moves the stones to panel b
+	 * @param a the index of player a
+	 * @param b the index of player b
+	 */
+	public void moveToB(int a, int b) {
+		int stonesCollected = 0;
+		stonesCollected += allPits[a];
+		stonesCollected += allPits[b];
+		allPits[a] = 0;
+		allPits[b] = 0;
+		allPits[13] += stonesCollected;
+		this.updateListeners();
+	}
+	
+	/**
+	 * checks if the game ends
+	 * @return the win value of the game
+	 * postcondition: game is not playable anymore
+	 */
 	public boolean checkIfGameEnds() {
 		boolean allEmptyPits = true;
 		int[] stonesInPits = MancalaView.getTotalStonesPits();
@@ -172,12 +293,20 @@ public class MancalaModel{
 		MancalaView.signalGameEnd();
 	}
 
+	/**
+	 * undos the past move of the player
+	 * postcondition: resets the play and attachs actionlisteners again
+	 */
 	public void undoMove() { 
 		numberOfUndos++;
 		allPits = previousPits.clone();
 		this.updateListeners();
 	}
 	
+	/**
+	 * the button for the undo function
+	 * @return the Jbutton for undo
+	 */
 	public JButton getUndoButton() {
 		JButton undoButton = new JButton("UNDO");
 		undoButton.addActionListener(new ActionListener() {
@@ -191,6 +320,10 @@ public class MancalaModel{
 		return undoButton;
 	}
 
+	/**
+	 * finds an empty row within the board
+	 * @return where that empty row is, player a or b
+	 */
 	public String getEmptyRow() {
 		boolean rowBEmpty = true;
 		boolean rowAEmpty = true;
@@ -213,6 +346,10 @@ public class MancalaModel{
 		return "Both aren't empty"; //Both rows are empty
 	}
 	
+	/**
+	 * gives all the leftover stones to player A
+	 * postcondition: all extra stones left to mancala A
+	 */
 	public void giveAllToMancalaA() {
 		int stonesLeftInRowA = 0;
 		for(int i = 0; i < 6; i++) {
@@ -223,6 +360,10 @@ public class MancalaModel{
 		this.updateListeners();
 	}
 	
+	/**
+	 * gives all the leftover stones to player B
+	 * postcondition: all extra stones left to mancala B
+	 */
 	public void giveAllToMancalaB() {
 		int stonesLeftInRowB = 0;
 		for(int i = 7; i < 13; i++) {

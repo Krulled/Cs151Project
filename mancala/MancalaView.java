@@ -211,11 +211,19 @@ public class MancalaView extends JComponent implements ChangeListener{
 		return totalStonesInPits;
 	}
 	
+	/**
+	 * 
+	 * @param array
+	 */
 	public static void setTotalStonesPits(int[] array) {
 		totalStonesInPits = array;
 	}
 	
 	@Override
+	/**
+	 * changes the amount of stones in each pit when clicked on a pit
+	 * postcondition: changes the arraylists of the pits
+	 */
 	public void stateChanged(ChangeEvent e) {
 		redraw();
 		totalStonesInPits = mancalaModel.getAllPits();
@@ -226,10 +234,19 @@ public class MancalaView extends JComponent implements ChangeListener{
 		revalidate();
 	}
 	
+	/**
+	 * signals for the end of the game
+	 * postcondition: decides the winner
+	 */
 	public static void signalGameEnd() {
 		JOptionPane.showMessageDialog(null, "Game is finished! The Winner is: " + MancalaModel.winner);
 	}
 	
+	/**
+	 * Displays the scores right below the goal mancalas 
+	 * precondition: needs to have the goals set up
+	 * postcondition: prints the score
+	 */
 	public void displayScores() {
 		int scoreA = totalStonesInPits[6];
 		int scoreB = totalStonesInPits[13];
