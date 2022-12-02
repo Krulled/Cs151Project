@@ -25,6 +25,7 @@ import javax.swing.event.ChangeListener;
  *  		(>>>Row A>>>) 
  */
 
+
 public class MancalaView extends JComponent implements ChangeListener{
 
 	static final int BOARD_WIDTH = 500;
@@ -39,24 +40,25 @@ public class MancalaView extends JComponent implements ChangeListener{
 	private GoalMancala A;
 	private GoalMancala B;
 	private static ArrayList<Hole> allPits;
-//	private ArrayList<Pit> rowB;
 	private static int[] totalStonesInPits;  //total stones in each pit
-//	private int[] totalStonesGoals; //total stones in each goal pit
 	
 	private MancalaModel mancalaModel;
 	private MancalaFormatter mancalaFormat;
 	private int initialStones;
-	
+	static boolean gameFinished = false;
+		
 
+	/**
+	 * Contructor for creating new MancalaView 
+	 * @param model, model to be attached to view
+	 */
 	public MancalaView(MancalaModel model) {
 		mancalaModel = model;
 		mancalaModel.addChangeListener(this);
 		mancalaFormat = model.getFormat();
 		allPits = new ArrayList<Hole>();
-//		rowB = new ArrayList<>();
 		initialStones = model.getInitialStones();
 		totalStonesInPits = new int[14]; //includes pits and goal pits
-//		totalStonesGoals = new int[2];
 		for(int i = 0; i < totalStonesInPits.length; i++) {
 			if(i == 6 || i == 13) { //GOAL PITS have 0 stones initially
 				totalStonesInPits[i] = 0;
@@ -64,15 +66,14 @@ public class MancalaView extends JComponent implements ChangeListener{
 			else { 					//PITS have intialStones initially
 				totalStonesInPits[i] = model.getInitialStones();
 			}
-//			System.out.println("totalStonesPits[i]:" + totalStonesPits[i]);
 		}
-//		for(int i = 0; i < totalStonesGoals.length; i++) {
-//			totalStonesPits[i] = 0;
-//		}
 		MouseListeners mouseListener = new MouseListeners();
 		this.addMouseListener(mouseListener);
 	}
 
+	/**
+	 * Private class that returns MouseListener with mousePressed fuctionality 
+	 */
 	private class MouseListeners extends MouseAdapter{
 		public void mousePressed(MouseEvent e) {
 			for(int i = 0; i < totalStonesInPits.length; i++) {
@@ -84,12 +85,22 @@ public class MancalaView extends JComponent implements ChangeListener{
 		}
 	}
 	
-	//redraw -clear allPits, create new objs
+	public static ArrayList<Hole> getAllHoles(){
+		return allPits;
+	}
+	
+	/**
+	 * Clears all pits and redraws the object with new values
+	 */
 	public void redraw() {
 		allPits.clear();
 		drawView();
 	}
 	
+	/**
+	 * Paints the components onto the screen
+	 * @param g, the Graphics context
+	 */
 	public void paintComponent(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		Rectangle2D.Double border = new Rectangle2D.Double(20,20,BOARD_WIDTH,BOARD_HEIGHT);
@@ -104,9 +115,14 @@ public class MancalaView extends JComponent implements ChangeListener{
 		}
 	}
 	
+	/**
+	 * Creates new GoalMancala and Pit objects and sets their values accordingly
+	 */
 	public void drawView() {
+		mancalaFormat = mancalaModel.getFormat();
+
 		A = new GoalMancala(BOARD_WIDTH-50, BOARD_WIDTH/10-5, GOAL_WIDTH, GOAL_HEIGHT);
-		A.setColor(mancalaFormat.formatOutlineColor());
+		A.setColor(mancalaModel.getFormat().formatOutlineColor());
 		A.setStoneColor(mancalaFormat.formatStoneColor());
 		A.setShape(mancalaFormat.formatGoalMancalaShape(A)); 
 		A.setStones(totalStonesInPits[6]);
@@ -130,7 +146,6 @@ public class MancalaView extends JComponent implements ChangeListener{
 		A3.setStones(totalStonesInPits[3]); A3.setShape(mancalaFormat.formatPitShape(A3)); A3.setColor(mancalaFormat.formatOutlineColor()); A3.setStoneColor(mancalaFormat.formatStoneColor());
 		A4.setStones(totalStonesInPits[4]); A4.setShape(mancalaFormat.formatPitShape(A4)); A4.setColor(mancalaFormat.formatOutlineColor()); A4.setStoneColor(mancalaFormat.formatStoneColor());
 		A5.setStones(totalStonesInPits[5]); A5.setShape(mancalaFormat.formatPitShape(A5)); A5.setColor(mancalaFormat.formatOutlineColor()); A5.setStoneColor(mancalaFormat.formatStoneColor());
-//		rowA.add(A0); rowA.add(A1); rowA.add(A2); rowA.add(A3); rowA.add(A4); rowA.add(A5);
 
 		Pit B0 = new Pit(PIT_WIDTH*2 + PIT_WIDTH/5, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
 		Pit B1 = new Pit(B0.getX() + 55, TOP_Y, PIT_WIDTH, PIT_HEIGHT);
@@ -144,7 +159,6 @@ public class MancalaView extends JComponent implements ChangeListener{
 		B3.setStones(totalStonesInPits[9]); B3.setShape(mancalaFormat.formatPitShape(B3)); B3.setColor(mancalaFormat.formatOutlineColor()); B3.setStoneColor(mancalaFormat.formatStoneColor());
 		B4.setStones(totalStonesInPits[8]); B4.setShape(mancalaFormat.formatPitShape(B4)); B4.setColor(mancalaFormat.formatOutlineColor()); B4.setStoneColor(mancalaFormat.formatStoneColor());
 		B5.setStones(totalStonesInPits[7]); B5.setShape(mancalaFormat.formatPitShape(B5)); B5.setColor(mancalaFormat.formatOutlineColor()); B5.setStoneColor(mancalaFormat.formatStoneColor());
-//		rowB.add(B0); rowB.add(B1); rowB.add(B2); rowB.add(B3); rowB.add(B4); rowB.add(B5);
 		
 		allPits.add(A0); //A0 = 0
 		A0.setId(0);
@@ -191,35 +205,46 @@ public class MancalaView extends JComponent implements ChangeListener{
 		displayScores();
 	}
 	
+	/**
+	 * Returns the mancala model
+	 * @return MancalaModel
+	 */
 	public MancalaModel getMancalaModel() {
 		return mancalaModel;
 	}
 	
+	/**
+	 * Returns the number of initial stones
+	 * @return int
+	 */
 	public int getInitialStones() {
 		return initialStones;
 	}
 
+	/**
+	 * Sets the number of initial stones
+	 * @param initialStones
+	 */
 	public void setInitialStones(int initialStones) {
 		this.initialStones = initialStones;
 	}
 	
+	/**
+	 * Returns the totalStonesInPits array
+	 * @return totalStonesInPits
+	 */
 	public static int[] getTotalStonesPits() {
 		return totalStonesInPits;
 	}
 	
-	public int[] getTotalStonesGoals() {
-		return totalStonesInPits;
-	}
-	
 	/**
-	 * 
+	 * Sets the setTotalStonesPits array given new array
 	 * @param array
 	 */
 	public static void setTotalStonesPits(int[] array) {
 		totalStonesInPits = array;
 	}
 	
-	@Override
 	/**
 	 * changes the amount of stones in each pit when clicked on a pit
 	 * postcondition: changes the arraylists of the pits
@@ -240,6 +265,7 @@ public class MancalaView extends JComponent implements ChangeListener{
 	 */
 	public static void signalGameEnd() {
 		JOptionPane.showMessageDialog(null, "Game is finished! The Winner is: " + MancalaModel.winner);
+		gameFinished = true;
 	}
 	
 	/**
@@ -252,7 +278,6 @@ public class MancalaView extends JComponent implements ChangeListener{
 		int scoreB = totalStonesInPits[13];
 
 		JLabel scorePlayerA = new JLabel("Current Score for Player A: " + scoreA);
-//		scorePlayerA.setBounds(GOAL_HEIGHT, GOAL_HEIGHT, 30, 30);
 		scorePlayerA.setLocation(150, 500);
 		JLabel scorePlayerB = new JLabel("Current Score for Player B: " + scoreB);
 		scorePlayerB.setLocation(150, 750);
@@ -263,6 +288,4 @@ public class MancalaView extends JComponent implements ChangeListener{
 		this.add(scorePlayerB);
 
 	}
-	
-
 }
