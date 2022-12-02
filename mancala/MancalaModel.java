@@ -21,6 +21,8 @@ public class MancalaModel{
 	private int initialStones;
 	private MancalaFormatter format;
 	static String winner = "";
+	private String playerTurn = "Player A";
+	private String previousPlayer = "Player A";
 	
 	private int[] allPits;
 	private int[] previousPits;
@@ -80,6 +82,11 @@ public class MancalaModel{
 		}
 		else if(selectedStones.equals("1")) {
 			initialStones = 1;
+		}
+		
+		for(int i = 0; i < allPits.length; i++) {
+			if(i != 6 && i != 13)
+			allPits[i] = initialStones;
 		}
 
 		popup.add(selectionTheme);
@@ -150,11 +157,20 @@ public class MancalaModel{
 	 * @param index - the index at which we starting moving the stones
 	 * postcondition: stones will change pits
 	 */
-	public void moveStones(int index) {
+		public void moveStones(int index) {
+//		changePlayers();
 		previousPits =  getViewPits().clone();
+		previousPlayer = playerTurn;
 		allPits = getViewPits();
 		int[] stonesInPits = MancalaView.getTotalStonesPits();
 		numberOfUndos = 0;
+		
+		if(playerTurn == "Player A" && index >= 7) {
+			return;
+		}
+		if(playerTurn == "Player B" && index <= 5) {
+			return;
+		}
 		
 		int numberStones = stonesInPits[index]; //number of stones in THIS pit
 		stonesInPits[index] = 0; //reset this pit to 0 stones
@@ -162,28 +178,46 @@ public class MancalaModel{
 		while(numberStones > 0) { //while number of stones > 0
 			temp++;
 			temp = temp % allPits.length;
-			if(index <= 5 && temp == 13) { //Don't add in MancalaB if Player 1
-				temp = 0;
-			}
-			if(index >= 7 && temp == 6) { //Don't add in MancalaA if Player 2
-				temp = 7;
+			if(numberStones != 1) {
+				if(index <= 5 && temp == 13) { //Don't add in MancalaB if Player 1
+					temp = 0;
+				}
+				if(index >= 7 && temp == 6) { //Don't add in MancalaA if Player 2
+					temp = 7;
+				}
 			}
 			stonesInPits[temp] = stonesInPits[temp] + 1;
+			if(numberStones == 1) {
+				if(playerTurn == "Player A" && temp == 6) {
+					playerTurn = "Player A";
+				}
+				else if(playerTurn == "Player B" && temp == 13) {
+					playerTurn = "Player B";
+				}
+				else {
+				changePlayers();
+				}
+			}
+
 			numberStones--;
 		}
 		if(stonesInPits[temp] == 1) {
 			if(temp <= 5 && temp >= 0) { //Don't add in MancalaB if Player 1
-				giveOppositeA(temp);
+//				giveOppositeA(temp);
+				giveOppositeB(temp);
 			}
 			if(temp <= 12 && temp >= 7) { //Don't add in MancalaA if Player 2
-				giveOppositeB(temp);
+//				giveOppositeB(temp);
+				giveOppositeA(temp);
 			}
 		}
 		if(getEmptyRow() == "Row A") {
 			giveAllToMancalaB();
+			changePlayers();
 		}
 		else if(getEmptyRow() == "Row B") {
 			giveAllToMancalaA();
+			changePlayers();
 		}
 		// start here with if statement
 		//if last pile stones = 1, give all opposite pile to placer
@@ -191,6 +225,20 @@ public class MancalaModel{
 
 		if(checkIfGameEnds() == true) {
 			displayWinner();
+		}
+//		changePlayers();
+	}
+	
+	/**
+	 * Changes the player's turn
+	 * Postcondition: playerTurn is changed
+	 */
+	public void changePlayers() {
+		if(playerTurn == "Player A") {
+			playerTurn = "Player B";
+		}
+		else if (playerTurn == "Player B"){
+			playerTurn = "Player A";
 		}
 	}
 	
@@ -299,6 +347,7 @@ public class MancalaModel{
 	 */
 	public void undoMove() { 
 		numberOfUndos++;
+		playerTurn = previousPlayer; 
 		allPits = previousPits.clone();
 		this.updateListeners();
 	}
@@ -372,7 +421,42 @@ public class MancalaModel{
 		}
 		allPits[13] += stonesLeftInRowB; //add all REMAINING stones to Mancala B
 		this.updateListeners();
+	}
+	
+		/**
+	 * returns a JButton that styles the board with blue format
+	 * @return JButton
+	 */
+	public JButton getBlueFormat() {
+		JButton blueFormat = new JButton("Blue Theme!");
+		blueFormat.addActionListener(new ActionListener() {
 
+			public void actionPerformed(ActionEvent e) {
+				BlueFormat blue = new BlueFormat();
+				setFormat(blue);
+				updateListeners();
+			}
+			
+		});
+		return blueFormat;
+	}
+
+	/**
+	 * returns a JButton that styles the board with pink format
+	 * @return JButton
+	 */
+	public JButton getPinkFormat() {
+		JButton pinkFormat = new JButton("Pink Theme!");
+		pinkFormat.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				PinkFormat pink = new PinkFormat();
+				setFormat(pink);
+				updateListeners();
+			}
+			
+		});
+		return pinkFormat;
 	}
 
 }
