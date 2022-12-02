@@ -17,6 +17,7 @@ import javax.swing.event.ChangeListener;
 
 public class MancalaModel{
 
+	public JLabel whosTurn = new JLabel("Player A's turn");
 	private ArrayList<ChangeListener> listeners;
 	private int initialStones;
 	private MancalaFormatter format;
@@ -228,6 +229,18 @@ public class MancalaModel{
 		}
 //		changePlayers();
 	}
+		
+		public void changeTurnLabel(int temp) {
+			if(temp == 0) {
+				whosTurn.setText("Player A's turn!");
+			}
+			if(temp == 1) {
+				whosTurn.setText("Player B's turn!");
+			}
+			whosTurn.repaint();
+			whosTurn.validate();
+			
+		}
 	
 	/**
 	 * Changes the player's turn
@@ -236,9 +249,11 @@ public class MancalaModel{
 	public void changePlayers() {
 		if(playerTurn == "Player A") {
 			playerTurn = "Player B";
+			changeTurnLabel(1);
 		}
 		else if (playerTurn == "Player B"){
 			playerTurn = "Player A";
+			changeTurnLabel(0);
 		}
 	}
 	
